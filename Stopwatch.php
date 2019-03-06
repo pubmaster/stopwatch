@@ -56,10 +56,11 @@ class Stopwatch implements ResetInterface
      * Creates a new section or re-opens an existing section.
      *
      * @param string|null $id The id of the session to re-open, null to create a new one
+     * @param array       $payload The section payload
      *
      * @throws \LogicException When the section to re-open is not reachable
      */
-    public function openSection($id = null)
+    public function openSection($id = null, array $payload = [])
     {
         $current = end($this->activeSections);
 
@@ -68,7 +69,7 @@ class Stopwatch implements ResetInterface
         }
 
         $this->start('__section__.child', 'section');
-        $this->activeSections[] = $current->open($id);
+        $this->activeSections[] = $current->open($id, $payload);
         $this->start('__section__');
     }
 

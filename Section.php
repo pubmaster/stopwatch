@@ -44,13 +44,20 @@ class Section
     private $children = [];
 
     /**
+     * @var array
+     */
+    private $payload = [];
+
+    /**
      * @param float|null $origin        Set the origin of the events in this section, use null to set their origin to their start time
      * @param bool       $morePrecision If true, time is stored as float to keep the original microsecond precision
+     * @param array      $payload       The section payload
      */
-    public function __construct(float $origin = null, bool $morePrecision = false)
+    public function __construct(float $origin = null, bool $morePrecision = false, array $payload = [])
     {
         $this->origin = $origin;
         $this->morePrecision = $morePrecision;
+        $this->payload = $payload;
     }
 
     /**
@@ -73,13 +80,14 @@ class Section
      * Creates or re-opens a child section.
      *
      * @param string|null $id Null to create a new section, the identifier to re-open an existing one
+     * @param array       $payload
      *
      * @return self
      */
-    public function open($id)
+    public function open($id, array $payload = [])
     {
         if (null === $session = $this->get($id)) {
-            $session = $this->children[] = new self(microtime(true) * 1000, $this->morePrecision);
+            $session = $this->children[] = new self(microtime(true) * 1000, $this->morePrecision, $payload);
         }
 
         return $session;
@@ -112,13 +120,14 @@ class Section
      *
      * @param string $name     The event name
      * @param string $category The event category
+     * @param array  $payload  The event payload
      *
      * @return StopwatchEvent The event
      */
-    public function startEvent($name, $category)
+    public function startEvent($name, $category, array $payload = [])
     {
         if (!isset($this->events[$name])) {
-            $this->events[$name] = new StopwatchEvent($this->origin ?: microtime(true) * 1000, $category, $this->morePrecision);
+            $this->events[$name] = new StopwatchEvent($this->origin ?: microtime(true) * 1000, $category, $this->morePrecision, $payload);
         }
 
         return $this->events[$name]->start();
@@ -194,5 +203,13 @@ class Section
     public function getEvents()
     {
         return $this->events;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPayload()
+    {
+        return $this->payload;
     }
 }

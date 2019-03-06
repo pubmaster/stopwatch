@@ -44,17 +44,24 @@ class StopwatchEvent
     private $started = [];
 
     /**
+     * @var array
+     */
+    private $payload = [];
+
+    /**
      * @param float       $origin        The origin time in milliseconds
      * @param string|null $category      The event category or null to use the default
      * @param bool        $morePrecision If true, time is stored as float to keep the original microsecond precision
+     * @param array       $payload       The event payload
      *
      * @throws \InvalidArgumentException When the raw time is not valid
      */
-    public function __construct(float $origin, string $category = null, bool $morePrecision = false)
+    public function __construct(float $origin, string $category = null, bool $morePrecision = false, array $payload = [])
     {
         $this->origin = $this->formatTime($origin);
         $this->category = \is_string($category) ? $category : 'default';
         $this->morePrecision = $morePrecision;
+        $this->payload = $payload;
     }
 
     /**
@@ -244,5 +251,13 @@ class StopwatchEvent
     public function __toString()
     {
         return sprintf('%s: %.2F MiB - %d ms', $this->getCategory(), $this->getMemory() / 1024 / 1024, $this->getDuration());
+    }
+
+    /**
+     * @return array
+     */
+    public function getPayload()
+    {
+        return $this->payload;
     }
 }

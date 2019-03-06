@@ -149,18 +149,19 @@ class Section
      * Stops an event.
      *
      * @param string $name The event name
+     * @param array  $payload  The event payload
      *
      * @return StopwatchEvent The event
      *
      * @throws \LogicException When the event has not been started
      */
-    public function stopEvent($name)
+    public function stopEvent($name, array $payload = [])
     {
         if (!isset($this->events[$name])) {
             throw new \LogicException(sprintf('Event "%s" is not started.', $name));
         }
 
-        return $this->events[$name]->stop();
+        return $this->events[$name]->stop($payload);
     }
 
     /**

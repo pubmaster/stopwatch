@@ -99,17 +99,21 @@ class StopwatchEvent
     /**
      * Stops the last started event period.
      *
+     * @param array $payload
+     *
      * @return $this
      *
      * @throws \LogicException When stop() is called without a matching call to start()
      */
-    public function stop()
+    public function stop($payload = [])
     {
         if (!\count($this->started)) {
             throw new \LogicException('stop() called but start() has not been called before.');
         }
 
         $this->periods[] = new StopwatchPeriod(array_pop($this->started), $this->getNow(), $this->morePrecision);
+
+        $this->payload = array_merge($this->payload, $payload);
 
         return $this;
     }
@@ -127,11 +131,13 @@ class StopwatchEvent
     /**
      * Stops the current period and then starts a new one.
      *
+     * @param array $payload
+     *
      * @return $this
      */
-    public function lap()
+    public function lap($payload = [])
     {
-        return $this->stop()->start();
+        return $this->stop($payload)->start();
     }
 
     /**

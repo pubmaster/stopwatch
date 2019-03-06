@@ -101,12 +101,13 @@ class Stopwatch implements ResetInterface
      *
      * @param string      $name     The event name
      * @param string|null $category The event category
+     * @param array       $payload  The event payload
      *
      * @return StopwatchEvent
      */
-    public function start($name, $category = null)
+    public function start($name, $category = null, array $payload = [])
     {
-        return end($this->activeSections)->startEvent($name, $category);
+        return end($this->activeSections)->startEvent($name, $category, $payload);
     }
 
     /**
@@ -125,24 +126,26 @@ class Stopwatch implements ResetInterface
      * Stops an event.
      *
      * @param string $name The event name
+     * @param array  $payload  The event payload
      *
      * @return StopwatchEvent
      */
-    public function stop($name)
+    public function stop($name, array $payload = [])
     {
-        return end($this->activeSections)->stopEvent($name);
+        return end($this->activeSections)->stopEvent($name, $payload);
     }
 
     /**
      * Stops then restarts an event.
      *
      * @param string $name The event name
+     * @param array  $payload  The event payload
      *
      * @return StopwatchEvent
      */
-    public function lap($name)
+    public function lap($name, array $payload = [])
     {
-        return end($this->activeSections)->stopEvent($name)->start();
+        return end($this->activeSections)->stopEvent($name, $payload)->start();
     }
 
     /**
